@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4ever Timer</title>
+    <style>
+        :root {
+            --bg-color: #e8f2ed; /* Soft sage green tint */
+            --card-bg: #ffffff;
+            --primary: #40826D;  /* Her favorite emerald green */
+            --dark-green: #235143; 
+            --text: #2c3e38;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            text-align: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: var(--card-bg);
+            padding: 30px 20px;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(64, 130, 109, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            text-decoration: none;
+            color: var(--primary);
+            font-size: 0.9rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            color: var(--dark-green);
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-bottom: 25px;
+        }
+
+        /* Timer Grid Layout */
+        .timer-box {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .time-unit {
+            background: var(--bg-color);
+            padding: 12px 5px;
+            border-radius: 14px;
+        }
+
+        .time-num {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--dark-green);
+            display: block;
+        }
+
+        .time-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            margin-top: 2px;
+            display: block;
+        }
+
+        /* Interactive Action Button */
+        .imy-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 18px 36px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(64, 130, 109, 0.3);
+            transition: all 0.2s ease;
+            outline: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            margin-bottom: 15px;
+            width: 85%;
+        }
+
+        .imy-btn:active {
+            transform: scale(0.96);
+            box-shadow: 0 3px 10px rgba(64, 130, 109, 0.3);
+        }
+
+        /* Decorative Floating Heart Elements */
+        .heart {
+            position: absolute;
+            font-size: 24px;
+            color: var(--primary);
+            pointer-events: none;
+            animation: floatUp 1.2s ease-out forwards;
+            user-select: none;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-120px) scale(1.3) rotate(15deg);
+                opacity: 0;
+            }
+        }
+
+        .status-msg {
+            font-size: 0.9rem;
+            color: var(--dark-green);
+            height: 20px;
+            font-weight: 500;
+        }
+    </style>
+    
+    <!-- OneSignal Web SDK Injection -->
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+        window.OneSignal = window.OneSignal || [];
+        OneSignal.push(async function() {
+            await OneSignal.init({
+                appId: "19502337-1f76-4600-a1de-1e499263572c",
+                safari_web_id: "web.onesignal.auto.0654afc0-ce06-4b31-9757-37165e976417",
+                notifyButton: { enable: false },
+            });
+            
+            // Assign specific target tags based on who is visiting the page
+            if (currentUser === 'her') {
+                OneSignal.User.addTag("user_role", "her");
+            } else if (currentUser === 'me') {
+                OneSignal.User.addTag("user_role", "me");
+            }
+        });
+    </script>
+</head>
+<body>
+
+    <div class="container" id="mainContainer">
+        <!-- Persistent Hub Navigation Link -->
+        <a href="../index.html" class="back-btn" id="backLink">◀ Hub</a>
+
+        <h1 id="greeting">Our Timeline</h1>
+        <p class="subtitle" id="subGreeting">Every second matters</p>
+
+        <!-- Precision Countdown Engine Grid -->
+        <div class="timer-box">
+            <div class="time-unit">
+                <span class="time-num" id="days">00</span>
+                <span class="time-label">Days</span>
+            </div>
+            <div class="time-unit">
+                <span class="time-num" id="hours">00</span>
+                <span class="time-label">Hrs</span>
+            </div>
+            <div class="time-unit">
+                <span class="time-num" id="mins">00</span>
+                <span class="time-label">Mins</span>
+            </div>
+            <div class="time-unit">
+                <span class="time-num" id="secs">00</span>
+                <span class="time-label">Secs</span>
+            </div>
+        </div>
+
+        <!-- Notification Dispatch Trigger -->
+        <button class="imy-btn" id="actionBtn" onclick="sendSignal()">I Miss You 💚</button>
+        <p class="status-msg" id="statusText"></p>
+    </div>
+
+    <script>
+        // Set relationship milestone date (May 21st, 2026 at Midnight)
+        const startDate = new Date(2026, 4, 21, 0, 0, 0);
+
+        // Capture url target parameter tags (?user=me / ?user=her)
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentUser = urlParams.get('user') || 'her';
+
+        const greeting = document.getElementById('greeting');
+        const subGreeting = document.getElementById('subGreeting');
+        const actionBtn = document.getElementById('actionBtn');
+        const statusText = document.getElementById('statusText');
+        const backLink = document.getElementById('backLink');
+
+        // Maintain user states down back navigation loops
+        if (window.location.search) {
+            backLink.href += window.location.search;
+        }
+
+        // Tailor UI text depending on the active device user
+        if (currentUser === 'me') {
+            greeting.innerText = "Hey You!";
+            subGreeting.innerText = "Thinking of her?";
+            actionBtn.innerText = "Send a Miss You 💚";
+        } else {
+            greeting.innerText = "Hey Thiriniya!";
+            subGreeting.innerText = "Every single second with you counts";
+            actionBtn.innerText = "I Miss You 💚";
+        }
+
+        // Mathematical calculation engine running the real-time clock delta
+        function updateTimer() {
+            const now = new Date();
+            const diff = now - startDate;
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = days.toString().padStart(2, '0');
+            document.getElementById('hours').innerText = hours.toString().padStart(2, '0');
+            document.getElementById('mins').innerText = mins.toString().padStart(2, '0');
+            document.getElementById('secs').innerText = secs.toString().padStart(2, '0');
+        }
+        setInterval(updateTimer, 1000);
+        updateTimer();
+
+        // REST API network execution to trigger cross-device alerts
+        function sendSignal() {
+            createHearts();
+            statusText.innerText = "Sending love...";
+
+            let targetRole = currentUser === 'her' ? 'me' : 'her';
+            let messageTitle = currentUser === 'her' ? "Thiriniya misses you! 💚" : "He is thinking of you! 😘";
+            let messageBody = currentUser === 'her' ? "She tapped the button on your page!" : "He tapped the button on your page!";
+
+            // Network Payload definitions sent directly to OneSignal Pipeline
+            const notificationPayload = {
+                app_id: "YOUR_ONESIGNAL_APP_ID_HERE", // Replace with your actual App ID in Phase 3
+                contents: { en: messageBody },
+                headings: { en: messageTitle },
+                target_channel: "push",
+                filters: [
+                    { field: "tag", key: "user_role", relation: "=", value: targetRole }
+                ]
+            };
+
+            fetch("https://onesignal.com/api/v1/notifications", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Authorization": "Basic os_v2_app_dficgny7ozdabio6dzezey2xfqubm63iynuef64yvp5ep2cfjyezv5xj6fcgb5xuzifggfc46vtcubh7c4tctiylxl433mdavdeu3ey"
+                },
+                body: JSON.stringify(notificationPayload)
+            })
+            .then(response => {
+                if (response.ok) {
+                    statusText.innerText = "Sent! ✨";
+                    setTimeout(() => statusText.innerText = "", 3000);
+                } else {
+                    statusText.innerText = "Failed to send.";
+                }
+            })
+            .catch(err => {
+                statusText.innerText = "Connection error.";
+                console.error(err);
+            });
+        }
+
+        // Particle heart emitter system 
+        function createHearts() {
+            const btn = document.getElementById('actionBtn');
+            const rect = btn.getBoundingClientRect();
+            const container = document.getElementById('mainContainer');
+
+            for (let i = 0; i < 6; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerHTML = '💚';
+                
+                const randomX = rect.left + (Math.random() * rect.width) - container.getBoundingClientRect().left;
+                const randomY = rect.top - container.getBoundingClientRect().top;
+                
+                heart.style.left = `${randomX}px`;
+                heart.style.top = `${randomY}px`;
+                
+                container.appendChild(heart);
+                setTimeout(() => heart.remove(), 1200);
+            }
+        }
+    </script>
+</body>
+</html>
