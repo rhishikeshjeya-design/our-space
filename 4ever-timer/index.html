@@ -161,21 +161,30 @@
     <script>
         window.OneSignalDeferred = window.OneSignalDeferred || [];
         window.OneSignalDeferred.push(async function(OneSignal) {
-            await OneSignal.init({
-                appId: "19502337-1f76-4600-a1de-1e499263572c",
-                safari_web_id: "web.onesignal.auto.0654afc0-ce06-4b31-9757-37165e976417",
-                notifyButton: { enable: false },
-                serviceWorkerParam: { scope: "/our-space/" },
-                serviceWorkerPath: "our-space/OneSignalSDKWorker.js"
-            });
-            
-            // Assign specific target tags based on who is visiting the page
-            if (typeof currentUser !== 'undefined') {
-                if (currentUser === 'her') {
-                    OneSignal.User.addTag("user_role", "her");
-                } else if (currentUser === 'me') {
-                    OneSignal.User.addTag("user_role", "me");
+            try {
+                await OneSignal.init({
+                    appId: "19502337-1f76-4600-a1de-1e499263572c",
+                    safari_web_id: "web.onesignal.auto.0654afc0-ce06-4b31-9757-37165e976417",
+                    notifyButton: { enable: false },
+                    serviceWorkerParam: { scope: "/our-space/" },
+                    serviceWorkerPath: "/our-space/OneSignalSDKWorker.js"
+                });
+                
+                // Assign specific target tags based on who is visiting the page
+                if (typeof currentUser !== 'undefined') {
+                    if (currentUser === 'her') {
+                        OneSignal.User.addTag("user_role", "her");
+                    } else if (currentUser === 'me') {
+                        OneSignal.User.addTag("user_role", "me");
+                    }
                 }
+
+                // Explicitly prompt for notifications if not already granted
+                if (OneSignal.Notifications && !OneSignal.Notifications.permission) {
+                    await OneSignal.Notifications.requestPermission();
+                }
+            } catch (error) {
+                console.error("OneSignal Initialization Error:", error);
             }
         });
     </script>
@@ -273,7 +282,7 @@
 
             // Network Payload definitions sent directly to OneSignal Pipeline
             const notificationPayload = {
-                app_id: "YOUR_ONESIGNAL_APP_ID_HERE", // Replace with your actual App ID in Phase 3
+                app_id: "19502337-1f76-4600-a1de-1e499263572c", // Fixed App ID matching your initialization
                 contents: { en: messageBody },
                 headings: { en: messageTitle },
                 target_channel: "push",
