@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Our Space</title>
     <link rel="manifest" href="manifest.json">
-    <!-- Imported Calligraphy and Serif Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
@@ -181,15 +180,26 @@
 
     <!-- Onboarding Guide for Her iPhone -->
     <div class="ios-prompt" id="iosPrompt" onclick="this.style.display='none'">
-        <p>Baby, to the full magic, tap the Safari Share button 📤 below and select <strong>'Add to Home Screen'</strong>!</p>
+        <p>Baby, to unlock the full magic, tap the Safari Share button 📤 below and select <strong>'Add to Home Screen'</strong>!</p>
     </div>
 
     <script>
         // Forward URL query strings parameter tags (?user=her or ?user=me) seamlessly down into app directories
         const currentUrlParams = window.location.search;
         if (currentUrlParams) {
-            document.getElementById('timerLink').href += currentUrlParams;
-            document.getElementById('gameLink').href += currentUrlParams;
+            const timerLink = document.getElementById('timerLink');
+            const gameLink = document.getElementById('gameLink');
+            
+            // Use URL objects to robustly handle joining relative paths and query parameters
+            const baseLocation = window.location.origin + window.location.pathname;
+            
+            const cleanTimerUrl = new URL(timerLink.getAttribute('href'), baseLocation);
+            cleanTimerUrl.search = currentUrlParams;
+            timerLink.href = cleanTimerUrl.pathname + cleanTimerUrl.search;
+
+            const cleanGameUrl = new URL(gameLink.getAttribute('href'), baseLocation);
+            cleanGameUrl.search = currentUrlParams;
+            gameLink.href = cleanGameUrl.pathname + cleanGameUrl.search;
         }
 
         // Restrict iOS onboarding instructions execution strictly to her mobile device browser contexts
