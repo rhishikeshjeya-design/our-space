@@ -271,7 +271,7 @@
         setInterval(updateTimer, 1000);
         updateTimer();
 
-        // REST API network execution to trigger cross-device alerts
+        // REST API network execution to trigger cross-device alerts securely via serverless backend
         function sendSignal() {
             createHearts();
             statusText.innerText = "Sending love...";
@@ -280,24 +280,16 @@
             let messageTitle = currentUser === 'her' ? "Thiriniya misses you! 💚" : "He is thinking of you! 😘";
             let messageBody = currentUser === 'her' ? "She tapped the button on your page!" : "He tapped the button on your page!";
 
-            // Network Payload definitions sent directly to OneSignal Pipeline
-            const notificationPayload = {
-                app_id: "19502337-1f76-4600-a1de-1e499263572c", // Fixed App ID matching your initialization
-                contents: { en: messageBody },
-                headings: { en: messageTitle },
-                target_channel: "push",
-                filters: [
-                    { field: "tag", key: "user_role", relation: "=", value: targetRole }
-                ]
-            };
-
-            fetch("https://onesignal.com/api/v1/notifications", {
+            fetch("/api/send-notification", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json; charset=utf-8",
-                    "Authorization": "Basic os_v2_app_dficgny7ozdabio6dzezey2xfstqzpouurve275cixaz2zfmb4smtpasbflv7x3gii5q5kgtpqijbcvzermxqzkislrjyj2namcu4yy"
+                    "Content-Type": "application/json"
                 },
-                body: JSON.stringify(notificationPayload)
+                body: JSON.stringify({
+                    targetRole: targetRole,
+                    messageTitle: messageTitle,
+                    messageBody: messageBody
+                })
             })
             .then(response => {
                 if (response.ok) {
