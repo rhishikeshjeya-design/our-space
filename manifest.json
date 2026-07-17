@@ -1,0 +1,16 @@
+{
+  "name": "Our Space",
+  "short_name": "Our Space",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#e8f2ed",
+  "theme_color": "#40826D",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./wybmgf/us.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}

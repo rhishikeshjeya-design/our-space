@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Space Hub</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        :root {
+            --bg-color: #e8f2ed; /* Soft green tint */
+            --card-bg: #ffffff;
+            --primary: #40826D;  /* Her favorite green */
+            --dark-green: #235143; /* Rich dark green for headings */
+            --text: #2c3e38;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+        h1 { font-size: 1.8rem; margin-top: 20px; margin-bottom: 5px; color: var(--dark-green); }
+        .subtitle { font-size: 0.95rem; opacity: 0.7; margin-bottom: 30px; text-align: center; }
+        
+        .hub-grid { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 20px; }
+        .app-card {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 20px;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 8px 24px rgba(64, 130, 109, 0.1);
+            transition: transform 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .app-card:active { transform: scale(0.97); }
+        .app-icon { font-size: 2.5rem; }
+        .app-info h2 { font-size: 1.2rem; color: var(--dark-green); margin-bottom: 3px; }
+        .app-info p { font-size: 0.85rem; opacity: 0.7; }
+
+        .ios-prompt {
+            position: fixed; bottom: 20px; left: 20px; right: 20px;
+            background: white; padding: 20px; border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            display: none; flex-direction: column; align-items: center;
+            text-align: center; z-index: 1000;
+            border: 2px solid var(--primary);
+        }
+        .ios-prompt p { font-size: 0.9rem; margin-bottom: 10px; }
+        .ios-prompt strong { color: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <h1>Our Private Space</h1>
+    <p class="subtitle">A collection of things made just for us</p>
+
+    <div class="hub-grid">
+        <!-- Route to 4ever-timer folder -->
+        <a href="./4ever-timer/index.html" class="app-card" id="timerLink">
+            <div class="app-icon">⏱️</div>
+            <div class="app-info">
+                <h2>Timer & Thinking of You</h2>
+                <p>Track our days and send live reminders when you miss me.</p>
+            </div>
+        </a>
+
+        <!-- Route to wybmgf folder -->
+        <a href="./wybmgf/index.html" class="app-card" id="gameLink">
+            <div class="app-icon">🎮</div>
+            <div class="app-info">
+                <h2>Our First Game</h2>
+                <p>Take a trip down memory lane.</p>
+            </div>
+        </a>
+    </div>
+
+    <!-- Onboarding Guide for Her iPhone -->
+    <div class="ios-prompt" id="iosPrompt">
+        <p>Hey Thiriniya! To unlock the full magic of this space, tap the Safari Share button 📤 below and select <strong>'Add to Home Screen'</strong>! ✨</p>
+    </div>
+
+    <script>
+        // Forward user flag (?user=her or ?user=me) down to subfolders
+        const currentUrlParams = window.location.search;
+        if (currentUrlParams) {
+            document.getElementById('timerLink').href += currentUrlParams;
+            document.getElementById('gameLink').href += currentUrlParams;
+        }
+
+        // Show prompt only if on iOS and not launched from home screen yet
+        const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        if (isIos && !isStandalone && urlParams.get('user') === 'her') {
+            document.getElementById('iosPrompt').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
