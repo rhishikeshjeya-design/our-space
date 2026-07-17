@@ -1,0 +1,237 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    user-select: none;
+}
+
+body {
+    background-color: #ffeef2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+}
+
+.screen.active {
+    display: flex;
+}
+
+.title {
+    color: #d63384;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    padding: 0 10px;
+}
+
+.btn {
+    background-color: #ff4d6d;
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+    transition: transform 0.2s;
+}
+
+.btn:active {
+    transform: scale(0.95);
+}
+
+/* Screen 2 Icon Grid */
+.icon-panel {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.choice-icon {
+    font-size: 3.5rem;
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+}
+
+.choice-icon:hover {
+    transform: scale(1.1);
+}
+
+/* Screen 3 Drag & Drop Elements */
+.draggable-item {
+    font-size: 3rem;
+    position: absolute;
+    top: 150px;
+    cursor: grab;
+    z-index: 10;
+    touch-action: none; /* Prevents mobile screen scrolling while dragging */
+}
+
+.bowls-container {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    max-width: 500px;
+    margin-top: 150px;
+    position: relative;
+}
+
+.bowl {
+    width: 120px;
+    height: 120px;
+    border: 4px dashed #ffb3c1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    position: relative;
+}
+
+#bowl-no {
+    position: relative;
+    transition: all 0.1s ease-out;
+}
+
+.bowl-label {
+    font-weight: bold;
+    color: #ff4d6d;
+    font-size: 1.1rem;
+}
+
+.sub-title {
+    color: #ffb3c1;
+    font-size: 1.2rem;
+    margin-top: 20px;
+    padding: 0 10px;
+    text-align: center;
+}
+
+/* Screen 4: Deeply Faded Full-Screen Wallpaper Backdrop */
+#screen4 {
+    position: relative;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.88), rgba(0, 0, 0, 0.88)), url('us.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+/* FIX: Breaking the flexbox inheritance so canvas and button absolute math maps correctly on mobile */
+#screen4.active {
+    display: block !important;
+}
+
+#heartCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background-color: transparent !important;
+}
+
+/* Screen 5 Background (Same faded look as Screen 4) */
+#screen5 {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.88), rgba(0, 0, 0, 0.88)), url('us.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: none; /* Hidden by default */
+    box-sizing: border-box;
+}
+
+#screen5.active {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+/* Button on Screen 4 - Mobile Default (Safe from phone gesture bars) */
+.gift-button {
+    position: absolute !important;
+    bottom: 110px !important; /* Perfect height for phones */
+    left: 50%;
+    transform: translateX(-50%); /* Centers the button perfectly horizontal */
+    background: transparent;
+    border: 2px solid #ff1e4b;
+    color: #ff1e4b;
+    z-index: 100;
+    opacity: 0; /* Hidden initially */
+    animation: fadeInButton 2s ease-in forwards;
+    animation-delay: 3s; /* Appears after heart starts forming */
+    white-space: nowrap; /* Prevents text layout cracking on narrower phones */
+}
+
+.gift-button:active {
+    transform: translateX(-50%) scale(0.95); /* Maintains horizontal alignment when clicked */
+}
+
+@media (min-width: 768px) {
+    .gift-button {
+        bottom: 45px !important; /* Moves it safely down below the heart on laptops/desktops */
+    }
+}
+
+@keyframes fadeInButton {
+    to { opacity: 1; }
+}
+
+/* Glass panel for the Spotify code */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 40px 20px;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    width: 85%;
+    max-width: 400px;
+}
+
+#spotify-code {
+    width: 100%;
+    max-width: 250px;
+    border-radius: 15px;
+    margin: 20px 0;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.white-text {
+    color: white !important;
+}
+
+.return-btn {
+    margin-top: 20px;
+    background-color: transparent;
+    border: 1px solid rgba(255,255,255,0.5);
+    font-size: 0.9rem;
+    padding: 10px 20px;
+}
