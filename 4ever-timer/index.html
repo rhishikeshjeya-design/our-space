@@ -159,21 +159,23 @@
     <!-- OneSignal Web SDK Injection -->
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
-        window.OneSignal = window.OneSignal || [];
-        OneSignal.push(async function() {
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        window.OneSignalDeferred.push(async function(OneSignal) {
             await OneSignal.init({
                 appId: "19502337-1f76-4600-a1de-1e499263572c",
                 safari_web_id: "web.onesignal.auto.0654afc0-ce06-4b31-9757-37165e976417",
                 notifyButton: { enable: false },
                 serviceWorkerParam: { scope: "/our-space/" },
-                serviceWorkerPath: "/our-space/OneSignalSDKWorker.js"
+                serviceWorkerPath: "our-space/OneSignalSDKWorker.js"
             });
             
             // Assign specific target tags based on who is visiting the page
-            if (currentUser === 'her') {
-                OneSignal.User.addTag("user_role", "her");
-            } else if (currentUser === 'me') {
-                OneSignal.User.addTag("user_role", "me");
+            if (typeof currentUser !== 'undefined') {
+                if (currentUser === 'her') {
+                    OneSignal.User.addTag("user_role", "her");
+                } else if (currentUser === 'me') {
+                    OneSignal.User.addTag("user_role", "me");
+                }
             }
         });
     </script>
