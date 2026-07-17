@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>wybmgf</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="screen1" class="screen active">
+        <h1 class="title">Hi My Pretty Baby!</h1>
+        <button class="btn" onclick="nextScreen(2)">Click me</button>
+    </div>
+
+    <div id="screen2" class="screen">
+        <h1 class="title">Pick an item to bring with you:</h1>
+        <div class="icon-panel">
+            <div class="choice-icon" onclick="selectIcon('❤️')">❤️</div>
+            <div class="choice-icon" onclick="selectIcon('🌹')">🌹</div>
+            <div class="choice-icon" onclick="selectIcon('💍')">💍</div>
+            <div class="choice-icon" onclick="selectIcon('✨')">✨</div>
+        </div>
+    </div>
+
+    <div id="screen3" class="screen">
+        <h1 class="title">Gorgeous baby, Will You Be My GirlFirend?</h1>
+        <h2 class="sub-title">(Drag the item and drop to choose)</h2>
+        
+        <div id="drag-icon" class="draggable-item">❤️</div>
+
+        <div class="bowls-container">
+            <div id="bowl-yes" class="bowl">
+                <span class="bowl-label">YES :)</span>
+            </div>
+            <div id="bowl-no" class="bowl">
+                <span class="bowl-label">NO :(</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen4" class="screen">
+        <canvas id="heartCanvas"></canvas>
+        <button id="gift-btn" class="btn gift-button" onclick="nextScreen(5)">Your Gift 🎁</button>
+    </div>
+
+    <div id="screen5" class="screen">
+        <div class="glass-panel">
+            <h1 class="title white-text">A Gift for My Sweet Thangam</h1>
+            <img src="code.png" id="spotify-code" alt="Scan to play our playlist">
+            <p class="subtitle white-text">Every song that reminds me of you...</p>
+            <button class="btn return-btn" onclick="nextScreen(4)">Back to Heart</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
