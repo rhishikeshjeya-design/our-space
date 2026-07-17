@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Space Hub</title>
+    <title>Our Space</title>
     <link rel="manifest" href="manifest.json">
+    <!-- Imported Calligraphy and Serif Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --bg-color: #e8f2ed; /* Soft green tint */
@@ -14,6 +19,7 @@
             --text: #2c3e38;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        
         body {
             background-color: var(--bg-color);
             color: var(--text);
@@ -21,83 +27,174 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            padding: 30px 20px;
+            padding: 40px 20px;
         }
-        h1 { font-size: 1.8rem; margin-top: 20px; margin-bottom: 5px; color: var(--dark-green); }
-        .subtitle { font-size: 0.95rem; opacity: 0.7; margin-bottom: 30px; text-align: center; }
+
+        /* Calligraphy Style Header Updates */
+        h1 { 
+            font-family: 'Great Vibes', cursive;
+            font-size: 3.8rem; 
+            font-weight: normal;
+            margin-bottom: 0px; 
+            color: var(--dark-green);
+            text-shadow: 1px 1px 2px rgba(64, 130, 109, 0.1);
+        }
         
-        .hub-grid { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 20px; }
+        .subtitle { 
+            font-size: 0.95rem; 
+            opacity: 0.75; 
+            margin-bottom: 40px; 
+            text-align: center; 
+            font-style: italic; 
+        }
+        
+        /* Vertical Timeline Layout Container */
+        .timeline {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            padding-left: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        /* The vertical spine of the timeline */
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 10px;
+            bottom: 10px;
+            width: 2px;
+            background: var(--primary);
+            opacity: 0.3;
+        }
+
+        .timeline-item {
+            position: relative;
+            width: 100%;
+        }
+
+        /* Timeline node indicator */
+        .timeline-dot {
+            position: absolute;
+            left: -31px;
+            top: 36px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            border: 3px solid var(--primary);
+            z-index: 2;
+            box-shadow: 0 0 0 4px var(--bg-color);
+        }
+
+        .timeline-date {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: block;
+            text-align: left;
+            padding-left: 2px;
+        }
+
         .app-card {
             background: var(--card-bg);
-            padding: 24px;
+            padding: 20px;
             border-radius: 20px;
             text-decoration: none;
             color: inherit;
             display: flex;
             align-items: center;
             gap: 15px;
-            box-shadow: 0 8px 24px rgba(64, 130, 109, 0.1);
-            transition: transform 0.2s;
+            box-shadow: 0 8px 24px rgba(64, 130, 109, 0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
             -webkit-tap-highlight-color: transparent;
+            width: 100%;
         }
-        .app-card:active { transform: scale(0.97); }
-        .app-icon { font-size: 2.5rem; }
-        .app-info h2 { font-size: 1.2rem; color: var(--dark-green); margin-bottom: 3px; }
-        .app-info p { font-size: 0.85rem; opacity: 0.7; }
 
+        .app-card:active {
+            transform: scale(0.97);
+            box-shadow: 0 4px 12px rgba(64, 130, 109, 0.05);
+        }
+
+        .app-icon { font-size: 2.2rem; }
+        .app-info { flex: 1; text-align: left; }
+        .app-info h2 { font-size: 1.1rem; color: var(--dark-green); margin-bottom: 4px; }
+        .app-info p { font-size: 0.85rem; opacity: 0.7; line-height: 1.3; }
+
+        /* iOS Installation Dialog Overlay */
         .ios-prompt {
             position: fixed; bottom: 20px; left: 20px; right: 20px;
             background: white; padding: 20px; border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 30px rgba(64, 130, 109, 0.2);
             display: none; flex-direction: column; align-items: center;
             text-align: center; z-index: 1000;
-            border: 2px solid var(--primary);
+            border-left: 5px solid var(--primary);
+            animation: popUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
-        .ios-prompt p { font-size: 0.9rem; margin-bottom: 10px; }
+        .ios-prompt p { font-size: 0.9rem; line-height: 1.4; }
         .ios-prompt strong { color: var(--primary); }
+
+        @keyframes popUp {
+            0% { transform: translateY(50px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
     </style>
 </head>
 <body>
 
-    <h1>Our Private Space</h1>
-    <p class="subtitle">A collection of things made just for us</p>
+    <h1>Our Space</h1>
+    <p class="subtitle">A collection of things made for you baby</p>
 
-    <div class="hub-grid">
-        <!-- Route to 4ever-timer folder -->
-        <a href="./4ever-timer/index.html" class="app-card" id="timerLink">
-            <div class="app-icon">⏱️</div>
-            <div class="app-info">
-                <h2>Timer & Thinking of You</h2>
-                <p>Track our days and send live reminders when you miss me.</p>
-            </div>
-        </a>
+    <div class="timeline">
+        <!-- Milestone 2: July 21st (Timer App) -->
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <span class="timeline-date">July 21 • 2 Months</span>
+            <a href="./4ever-timer/index.html" class="app-card" id="timerLink">
+                <div class="app-icon">⏱️</div>
+                <div class="app-info">
+                    <h2>Forever & Always Timer</h2>
+                    <p>Track our days and send live reminders when you miss me.</p>
+                </div>
+            </a>
+        </div>
 
-        <!-- Route to wybmgf folder -->
-        <a href="./wybmgf/index.html" class="app-card" id="gameLink">
-            <div class="app-icon">🎮</div>
-            <div class="app-info">
-                <h2>Our First Game</h2>
-                <p>Take a trip down memory lane.</p>
-            </div>
-        </a>
+        <!-- Milestone 1: June 21st (Game App) -->
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <span class="timeline-date">June 21 • 1 Month</span>
+            <a href="./wybmgf/index.html" class="app-card" id="gameLink">
+                <div class="app-icon">🎮</div>
+                <div class="app-info">
+                    <h2>Will You Be My GirlFriend?</h2>
+                    <p>My first ever app I made for you!</p>
+                </div>
+            </a>
+        </div>
     </div>
 
     <!-- Onboarding Guide for Her iPhone -->
-    <div class="ios-prompt" id="iosPrompt">
-        <p>Hey Thiriniya! To unlock the full magic of this space, tap the Safari Share button 📤 below and select <strong>'Add to Home Screen'</strong>! ✨</p>
+    <div class="ios-prompt" id="iosPrompt" onclick="this.style.display='none'">
+        <p>Baby, to the full magic, tap the Safari Share button 📤 below and select <strong>'Add to Home Screen'</strong>!</p>
     </div>
 
     <script>
-        // Forward user flag (?user=her or ?user=me) down to subfolders
+        // Forward URL query strings parameter tags (?user=her or ?user=me) seamlessly down into app directories
         const currentUrlParams = window.location.search;
         if (currentUrlParams) {
             document.getElementById('timerLink').href += currentUrlParams;
             document.getElementById('gameLink').href += currentUrlParams;
         }
 
-        // Show prompt only if on iOS and not launched from home screen yet
+        // Restrict iOS onboarding instructions execution strictly to her mobile device browser contexts
         const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
         
         const urlParams = new URLSearchParams(window.location.search);
         if (isIos && !isStandalone && urlParams.get('user') === 'her') {

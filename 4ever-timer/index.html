@@ -69,7 +69,38 @@
         .subtitle {
             font-size: 0.9rem;
             opacity: 0.7;
+            margin-bottom: 20px;
+        }
+
+        /* Restored Onboarding Guide Banner */
+        .ios-prompt {
+            background: #f0f7f4;
+            border: 1.5px dashed var(--primary);
+            color: var(--dark-green);
+            padding: 14px;
+            border-radius: 16px;
+            font-size: 0.85rem;
             margin-bottom: 25px;
+            line-height: 1.4;
+            width: 100%;
+            display: none; /* Hidden by default, JS reveals it if needed */
+            position: relative;
+        }
+
+        .ios-prompt strong {
+            color: var(--primary);
+        }
+
+        .close-prompt {
+            position: absolute;
+            top: 6px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            color: var(--dark-green);
+            opacity: 0.5;
+            cursor: pointer;
         }
 
         /* Timer Grid Layout */
@@ -198,6 +229,12 @@
         <h1 id="greeting">Our Timeline</h1>
         <p class="subtitle" id="subGreeting">Every second matters</p>
 
+        <!-- Onboarding Guide for Her iPhone -->
+        <div class="ios-prompt" id="iosPrompt">
+            <button class="close-prompt" onclick="document.getElementById('iosPrompt').style.display='none'">×</button>
+            <p>Baby, to the full magic, tap the Safari Share button 📤 below and select <strong>'Add to Home Screen'</strong>!</p>
+        </div>
+
         <!-- Precision Countdown Engine Grid -->
         <div class="timer-box">
             <div class="time-unit">
@@ -236,21 +273,30 @@
         const actionBtn = document.getElementById('actionBtn');
         const statusText = document.getElementById('statusText');
         const backLink = document.getElementById('backLink');
+        const iosPrompt = document.getElementById('iosPrompt');
 
         // Maintain user states down back navigation loops
         if (window.location.search) {
             backLink.href += window.location.search;
         }
 
-        // Tailor UI text depending on the active device user
+        // Check if app is running standalone (PWA mode installed on Home Screen)
+        const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+
+        // Tailor UI text and onboarding visibility depending on active device user
         if (currentUser === 'me') {
             greeting.innerText = "Hey You!";
             subGreeting.innerText = "Thinking of her?";
             actionBtn.innerText = "Send a Miss You 💚";
         } else {
-            greeting.innerText = "Hey Thiriniya!";
-            subGreeting.innerText = "Every single second with you counts";
+            greeting.innerText = "Hey Thangam!";
+            subGreeting.innerText = "Every single second with you counts, Literally lol";
             actionBtn.innerText = "I Miss You 💚";
+            
+            // Show iOS prompt only for her if not already installed as an app
+            if (!isStandalone) {
+                iosPrompt.style.display = 'block';
+            }
         }
 
         // Mathematical calculation engine running the real-time clock delta
@@ -271,14 +317,44 @@
         setInterval(updateTimer, 1000);
         updateTimer();
 
-        // REST API network execution to trigger cross-device alerts securely via serverless backend
+        // Rotating First-Person Sweet Message Banks
+        const messagesForHer = [
+            { title: "I miss you pretty baby 💚", body: "Just wanted to remind you how much you mean to me!" },
+            { title: "I love you my thangam ✨", body: "You're always on my mind, baby." },
+            { title: "Wish I was with you now baby 😘", body: "Counting down the seconds until we're together." },
+            { title: "Thinking of you always ❤️", body: "Sending you the biggest hug right now!" },
+            { title: "You're my whole world 🌎", body: "Hope this brings a smile to your pretty face!" },
+            { title: "Can't wait to see you again 🥰", body: "Every second without you feels too long." },
+            { title: "My sweet thangam 💕", body: "Just sending a little love your way today." },
+            { title: "You have my whole heart 💚", body: "Forever and always, my favorite person." },
+            { title: "Sending you a massive hug 🤗", body: "Wish I could hold you close right now!" },
+            { title: "You're on my mind, gorgeous ✨", body: "I love you more than words can say!" }
+        ];
+
+        const messagesForHim = [
+            { title: "I miss you angel 💚", body: "Wish you were here with me right now!" },
+            { title: "I love you so much ❤️", body: "Just thinking about you and smiling." },
+            { title: "You have my whole heart 😘", body: "Sending you all my love today!" },
+            { title: "Wish I was in your arms ✨", body: "Counting down the minutes until I see you!" },
+            { title: "Thinking of you, my love 🥰", body: "You make every single day better." },
+            { title: "I need a hug from you 🤗", body: "Just wanted to send a little reminder that I love you!" },
+            { title: "My favorite person 💕", body: "Forever yours, always and forever." },
+            { title: "I miss my baby 🥺", body: "Come see me soon, okay?" }
+        ];
+
+        // REST API execution to trigger randomized first-person alerts securely
         function sendSignal() {
             createHearts();
             statusText.innerText = "Sending love...";
 
             let targetRole = currentUser === 'her' ? 'me' : 'her';
-            let messageTitle = currentUser === 'her' ? "Thiriniya misses you! 💚" : "He is thinking of you! 😘";
-            let messageBody = currentUser === 'her' ? "She tapped the button on your page!" : "He tapped the button on your page!";
+            
+            // Pick a random message from the appropriate rotation bank
+            let pool = currentUser === 'her' ? messagesForHim : messagesForHer;
+            let randomChoice = pool[Math.floor(Math.random() * pool.length)];
+            
+            let messageTitle = randomChoice.title;
+            let messageBody = randomChoice.body;
 
             fetch("/api/send-notification", {
                 method: "POST",
